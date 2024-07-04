@@ -134,3 +134,7 @@ class ElasticNetReg:
 
     def get_predictions(self):
         return self.y_pred, self.y_test.values
+
+    def create_predictions_dataframe(self):
+        predictions_df = pd.DataFrame({'npi': self.new_df['npi'].unique(), 'y_pred_en': self.y_pred})
+        return predictions_df
