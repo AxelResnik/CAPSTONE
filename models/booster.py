@@ -143,6 +143,9 @@ class BoosterReg:
     def get_predictions(self):
         return self.y_pred, self.y_test.values
 
+    def get_sorted_importances(self):
+        return self.sorted_importances
+
     def create_predictions_dataframe(self):
         y_pred, _ = self.get_predictions()
         npi_list = self.new_df['npi'].unique()
