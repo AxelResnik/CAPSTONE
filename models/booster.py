@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import RandomizedSearchCV, train_test_split
 import xgboost as xgb
-from elastic_net import ElasticNetReg, ElasticNetNew
+from models.elastic_net import ElasticNetReg, ElasticNetNew
 
 class BoosterReg:
     def __init__(self, df):
