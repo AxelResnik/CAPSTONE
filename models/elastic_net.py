@@ -139,6 +139,29 @@ class ElasticNetReg:
         predictions_df = pd.DataFrame({'npi': self.new_df['npi'].unique(), 'y_pred_en_reg': self.y_pred})
         return predictions_df
 
+    def predict_on_new_data(self, new_data):
+        """
+        Predict on new data using the trained model.
+        
+        Parameters:
+        - new_data: pd.DataFrame, new data with the same structure as training data (including lagged features).
+        
+        Returns:
+        - y_pred_new: np.array, predictions for the new data.
+        """
+        # Ensure new_data is preprocessed in the same way as the training data
+        new_data_scaled = self.scaler.transform(new_data)
+
+        # Predict on the new data
+        y_pred_scaled = self.best_model.predict(new_data_scaled)
+
+        # Reverse the scaling on the predictions
+        y_pred_new = self.scaler_y.inverse_transform(y_pred_scaled.reshape(-1, 1)).flatten()
+        y_pred_new = np.round(y_pred_new, 0)
+        y_pred_new = np.maximum(y_pred_new, 0)
+
+        return y_pred_new
+
 
 class ElasticNetNew:
     def __init__(self, df):
@@ -268,3 +291,26 @@ class ElasticNetNew:
         test_indices = self.y_test.index
         predictions_df = pd.DataFrame({'npi': self.new_df.loc[test_indices, 'npi'], 'y_pred_en_new': self.y_pred})
         return predictions_df
+
+    def predict_on_new_data(self, new_data):
+        """
+        Predict on new data using the trained model.
+        
+        Parameters:
+        - new_data: pd.DataFrame, new data with the same structure as training data (including lagged features).
+        
+        Returns:
+        - y_pred_new: np.array, predictions for the new data.
+        """
+        # Ensure new_data is preprocessed in the same way as the training data
+        new_data_scaled = self.scaler.transform(new_data)
+
+        # Predict on the new data
+        y_pred_scaled = self.best_model.predict(new_data_scaled)
+
+        # Reverse the scaling on the predictions
+        y_pred_new = self.scaler_y.inverse_transform(y_pred_scaled.reshape(-1, 1)).flatten()
+        y_pred_new = np.round(y_pred_new, 0)
+        y_pred_new = np.maximum(y_pred_new, 0)
+
+        return y_pred_new
