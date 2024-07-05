@@ -75,6 +75,8 @@ This project focuses on leveraging data analytics to predict the demand for heal
 3. Train predictive models:
     ```bash
     python prediction_benchmarks.py
+    python elastic_net.py
+    python booster.py
     ```
 4. Segment healthcare providers:
     ```bash
@@ -106,6 +108,3 @@ healthcare-claims-prediction/
 - [Harel Ben David](https://github.com/harelbendavid)
 - [Iran Yexalen Benitez Calzada](https://github.com/iran-benitez)
 - [Majd Ennaby](https://github.com/majdennaby)
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
