@@ -1,0 +1,35 @@
+# Data manipulation and analysis
+pandas==1.5.3
+numpy==1.23.5
+
+# Data visualization
+matplotlib==3.6.3
+seaborn==0.12.2
+
+# Machine learning
+scikit-learn==1.2.0
+
+# Model evaluation
+statsmodels==0.13.5
+
+# Feature engineering
+category_encoders==2.5.1.post0
+
+# Clustering
+scipy==1.9.3
+
+# Jupyter notebook support (optional, for interactive development)
+jupyter==1.0.0
+
+# Data preprocessing and cleaning
+pyjanitor==0.23.0
+
+# Random forest implementation (optional)
+xgboost==1.7.2
+
+# Deep learning frameworks (optional)
+tensorflow==2.11.0
+keras==2.11.0
+
+# Hyperparameter optimization (optional)
+optuna==3.0.3
