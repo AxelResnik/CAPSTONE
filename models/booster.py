@@ -288,8 +288,3 @@ class BoosterNew:
 
     def get_sorted_importances(self):
         return self.sorted_importances
-
-        return predictions_df
-
-    def get_sorted_importances(self):
-        return self.sorted_importances
