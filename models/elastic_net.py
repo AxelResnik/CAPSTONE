@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import ElasticNet
 from sklearn.model_selection import RandomizedSearchCV, train_test_split
-from prediction_benchmarks import TimeGrowth
+from models.prediction_benchmarks import TimeGrowth
 
 class ElasticNetReg:
     def __init__(self, df):
