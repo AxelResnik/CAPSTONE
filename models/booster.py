@@ -27,7 +27,7 @@ class BoosterReg:
         # Unique NPI for both 2018 and 2020
         both_2018_2020 = grouped[grouped['service_year'] == {2018, 2020}]
 
-        # Filter out NPIs that appear in both_2018_2020
+        # Filter out NPIs that appear in both 2018 and 2020
         new_df = self.df[~self.df['npi'].isin(both_2018_2020['npi'])]
 
         # Select numerical columns, excluding 'CountyID', 'service_year', and 'service_quarter'
@@ -77,9 +77,6 @@ class BoosterReg:
 
         # Prepare features by including lagged columns and the ElasticNetReg predictions
         self.features = self.new_df[lagged_columns + ['y_pred_en_reg']]
-
-        # Define the target
-        target = self.new_df['total_claims']
 
         # Step 3: Split the data into training and test sets using the same logic as ElasticNetReg
         def create_train_test_split(df):
@@ -150,6 +147,7 @@ class BoosterReg:
         y_pred, _ = self.get_predictions()
         npi_list = self.new_df['npi'].unique()
         predictions_df = pd.DataFrame({'npi': npi_list, 'y_pred_booster': y_pred})
+        return predictions_df
 
     def predict_on_new_data(self, new_data):
         """
