@@ -19,6 +19,7 @@ class BoosterReg:
         self.scaler_y = StandardScaler()
         self.features = None
         self.sorted_importances = None
+        self.expected_feature_order = None  # To store the order of features
 
     def prepare_data(self):
         # Prepare new_df following the same steps as in ElasticNetReg
@@ -77,6 +78,12 @@ class BoosterReg:
 
         # Prepare features by including lagged columns and the ElasticNetReg predictions
         self.features = self.new_df[lagged_columns + ['y_pred_en_reg']]
+        
+        # Save the order of features
+        self.expected_feature_order = self.features.columns.tolist()
+
+        # Define the target
+        target = self.new_df['total_claims']
 
         # Step 3: Split the data into training and test sets using the same logic as ElasticNetReg
         def create_train_test_split(df):
@@ -98,6 +105,9 @@ class BoosterReg:
         # Standardize the target
         self.y_train_scaled = self.scaler_y.fit_transform(y_train.values.reshape(-1, 1)).flatten()
 
+    def get_expected_feature_order(self):
+        return self.expected_feature_order
+
     def fit_model(self):
         # Step 5: Set up the hyperparameter space for XGBoost
         param_distributions = {
@@ -112,7 +122,7 @@ class BoosterReg:
         xgb_regressor = xgb.XGBRegressor(objective='reg:squarederror', random_state=42)
 
         # Step 6: Set up Randomized Search CV
-        random_search = RandomizedSearchCV(xgb_regressor, param_distributions, n_iter=250, cv=5, random_state=42, n_jobs=1)
+        random_search = RandomizedSearchCV(xgb_regressor, param_distributions, n_iter=250, cv=5, random_state=42)
 
         # Step 7: Fit Randomized Search CV
         random_search.fit(self.X_train_scaled, self.y_train_scaled)
@@ -145,8 +155,8 @@ class BoosterReg:
 
     def create_predictions_dataframe(self):
         y_pred, _ = self.get_predictions()
-        npi_list = self.new_df['npi'].unique()
-        predictions_df = pd.DataFrame({'npi': npi_list, 'y_pred_booster': y_pred})
+        test_indices = self.y_test.index
+        predictions_df = pd.DataFrame({'npi': self.new_df.loc[test_indices, 'npi'], 'y_pred_booster': y_pred})
         return predictions_df
 
     def predict_on_new_data(self, new_data):
@@ -159,8 +169,11 @@ class BoosterReg:
         Returns:
         - y_pred_new: np.array, predictions for the new data.
         """
-        # Ensure new_data is preprocessed in the same way as the training data
-        new_data_scaled = self.scaler.transform(new_data)
+        # Ensure the new data has the required columns and in the correct order
+        new_data_processed = new_data[self.expected_feature_order]
+
+        # Standardize the features
+        new_data_scaled = self.scaler.transform(new_data_processed)
 
         # Predict on the new data
         y_pred_scaled = self.best_model.predict(new_data_scaled)
@@ -171,7 +184,6 @@ class BoosterReg:
         y_pred_new = np.maximum(y_pred_new, 0)
 
         return y_pred_new
-
 
 class BoosterNew:
     def __init__(self, df):
@@ -187,6 +199,7 @@ class BoosterNew:
         self.scaler_y = StandardScaler()
         self.features = None
         self.sorted_importances = None
+        self.expected_feature_order = None  # To store the order of features
 
     def prepare_data(self):
         # Prepare new_df following the same steps as in ElasticNetNew
@@ -195,7 +208,7 @@ class BoosterNew:
         # Unique NPI for both 2018 and 2020
         both_2018_2020 = grouped[grouped['service_year'] == {2018, 2020}]
 
-        # Filter out NPIs that appear in both_2018_2020
+        # Filter out NPIs that appear in both 2018 and 2020
         new_df = self.df[~self.df['npi'].isin(both_2018_2020['npi'])]
 
         # Select numerical columns, excluding 'CountyID', 'service_year', and 'service_quarter'
@@ -245,6 +258,9 @@ class BoosterNew:
 
         # Prepare features by including lagged columns and the ElasticNetNew predictions
         self.features = self.new_df[lagged_columns + ['y_pred_en_new']]
+        
+        # Save the order of features
+        self.expected_feature_order = self.features.columns.tolist()
 
         # Define the target
         target = self.new_df['total_claims']
@@ -261,6 +277,9 @@ class BoosterNew:
         # Standardize the target
         self.y_train_scaled = self.scaler_y.fit_transform(y_train.values.reshape(-1, 1)).flatten()
 
+    def get_expected_feature_order(self):
+        return self.expected_feature_order
+
     def fit_model(self):
         # Step 5: Set up the hyperparameter space for XGBoost
         param_distributions = {
@@ -276,7 +295,7 @@ class BoosterNew:
         xgb_regressor = xgb.XGBRegressor(objective='reg:squarederror', random_state=42)
 
         # Step 6: Set up Randomized Search CV
-        random_search = RandomizedSearchCV(xgb_regressor, param_distributions, n_iter=250, cv=5, random_state=42, n_jobs=1)
+        random_search = RandomizedSearchCV(xgb_regressor, param_distributions, n_iter=250, cv=5, random_state=42)
 
         # Step 7: Fit Randomized Search CV
         random_search.fit(self.X_train_scaled, self.y_train_scaled)
@@ -323,8 +342,11 @@ class BoosterNew:
         Returns:
         - y_pred_new: np.array, predictions for the new data.
         """
-        # Ensure new_data is preprocessed in the same way as the training data
-        new_data_scaled = self.scaler.transform(new_data)
+        # Ensure the new data has the required columns and in the correct order
+        new_data_processed = new_data[self.expected_feature_order]
+
+        # Standardize the features
+        new_data_scaled = self.scaler.transform(new_data_processed)
 
         # Predict on the new data
         y_pred_scaled = self.best_model.predict(new_data_scaled)
