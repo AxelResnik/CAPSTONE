@@ -6,6 +6,7 @@ class TimeGrowth:
     def __init__(self, df):
         self.df = df
         self.sorted_df = self._prepare_dataframe()
+        self.models = {}  # Dictionary to store models by npi
 
     def _prepare_dataframe(self):
         # Select the specified columns
@@ -46,10 +47,11 @@ class TimeGrowth:
             y_pred = np.round(y_pred, 0)
             y_pred = np.maximum(y_pred, 0)
             
-            # Store the results
+            # Store the results and the model
             y_pred_list.append(y_pred[0])
             y_test_list.append(y_test)
             npi_list.append(npi)
+            self.models[npi] = model
 
         return y_pred_list, y_test_list
 
@@ -57,6 +59,35 @@ class TimeGrowth:
         y_pred, _ = self.fit_predict()
         npi_list = self.sorted_df['npi'].unique()
         predictions_df = pd.DataFrame({'npi': npi_list, 'y_pred_tg': y_pred})
+        return predictions_df
+
+    def predict_for_period(self, year, quarter):
+        """
+        Predict the total claims for each npi for a specified period.
+        
+        Parameters:
+        - year: int, the service year for prediction.
+        - quarter: int, the service quarter for prediction.
+        
+        Returns:
+        - predictions_df: pd.DataFrame, predictions for the specified period with npi and predicted values.
+        """
+        predictions = []
+        npi_list = []
+
+        for npi, model in self.models.items():
+            # Create a DataFrame for the new period
+            X_new = pd.DataFrame({'service_year': [year], 'service_quarter': [quarter]})
+            
+            # Predict the value for the specified period
+            y_pred = model.predict(X_new)
+            y_pred = np.round(y_pred, 0)
+            y_pred = np.maximum(y_pred, 0)
+            
+            predictions.append(y_pred[0])
+            npi_list.append(npi)
+
+        predictions_df = pd.DataFrame({'npi': npi_list, 'y_pred_tg': predictions})
         return predictions_df
 
 
