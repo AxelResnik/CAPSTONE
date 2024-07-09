@@ -19,6 +19,7 @@ class ElasticNetReg:
         self.y_test = None
         self.features = None
         self.sorted_coefficients = None
+        self.expected_feature_order = None  # To store the order of features
 
     def prepare_data(self):
         # Prepare the DataFrame
@@ -27,7 +28,7 @@ class ElasticNetReg:
         # Unique NPI for both 2018 and 2020
         both_2018_2020 = grouped[grouped['service_year'] == {2018, 2020}]
 
-        # Filter out NPIs that appear in both_2018_2020
+        # Filter out NPIs that appear in both 2018 and 2020
         self.new_df = self.df[~self.df['npi'].isin(both_2018_2020['npi'])]
 
         # Select numerical columns, excluding 'CountyID', 'service_year', and 'service_quarter'
@@ -72,6 +73,9 @@ class ElasticNetReg:
         # Prepare the features by including lagged columns and y_pred_tg
         lagged_columns = [col for col in self.new_df.columns if '_lag_' in col]
         self.features = self.new_df[lagged_columns + ['y_pred_tg']]
+        
+        # Save the order of features
+        self.expected_feature_order = self.features.columns.tolist()
 
         # Create train-test split such that the test set is the last observation of each npi
         def create_train_test_split(df):
@@ -136,8 +140,13 @@ class ElasticNetReg:
         return self.y_pred, self.y_test.values
 
     def create_predictions_dataframe(self):
-        predictions_df = pd.DataFrame({'npi': self.new_df['npi'].unique(), 'y_pred_en_reg': self.y_pred})
+        # Use the same indices for the predictions as the test set
+        test_indices = self.y_test.index
+        predictions_df = pd.DataFrame({'npi': self.new_df.loc[test_indices, 'npi'], 'y_pred_en_reg': self.y_pred})
         return predictions_df
+
+    def get_expected_feature_order(self):
+        return self.expected_feature_order
 
     def predict_on_new_data(self, new_data):
         """
@@ -162,7 +171,6 @@ class ElasticNetReg:
 
         return y_pred_new
 
-
 class ElasticNetNew:
     def __init__(self, df):
         self.df = df
@@ -177,6 +185,7 @@ class ElasticNetNew:
         self.y_test = None
         self.features = None
         self.sorted_coefficients = None
+        self.expected_feature_order = None  # To store the order of features
 
     def prepare_data(self):
         # Prepare the DataFrame
@@ -185,7 +194,7 @@ class ElasticNetNew:
         # Unique NPI for both 2018 and 2020
         both_2018_2020 = grouped[grouped['service_year'] == {2018, 2020}]
 
-        # Filter out NPIs that appear in both_2018_2020
+        # Filter out NPIs that appear in both 2018 and 2020
         self.new_df = self.df[~self.df['npi'].isin(both_2018_2020['npi'])]
 
         # Select numerical columns, excluding 'CountyID', 'service_year', and 'service_quarter'
@@ -230,6 +239,9 @@ class ElasticNetNew:
         # Prepare the features by including lagged columns and y_pred_tg
         lagged_columns = [col for col in self.new_df.columns if '_lag_' in col]
         self.features = self.new_df[lagged_columns + ['y_pred_tg']]
+        
+        # Save the order of features
+        self.expected_feature_order = self.features.columns.tolist()
 
         # Define the target
         target = self.new_df['total_claims']
@@ -243,6 +255,9 @@ class ElasticNetNew:
 
         # Standardize the target
         self.y_train_scaled = self.scaler_y.fit_transform(y_train.values.reshape(-1, 1)).flatten()
+
+    def get_expected_feature_order(self):
+        return self.expected_feature_order
 
     def fit_model(self):
         # Set up the hyperparameter space
