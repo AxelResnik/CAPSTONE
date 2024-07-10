@@ -19,13 +19,12 @@ This project focuses on leveraging data analytics to predict the demand for heal
 - [Contributors](#contributors)
 
 ## Dataset
-- **Source:** CAPTONE project for ie Business school in collaboration with Accenture.
+- **Source:** CAPSTONE project for IE Business school in collaboration with Accenture.
 - **Description:** Historical claims data from North Carolina's health insurance market (Years 2018, 2019, 2020).
 - **Preprocessing:** Data cleaning and preprocessing steps to ensure data quality.
 
 ## Methodology
 ### Data Collection and Preprocessing
-- Collected data from [source].
 - Cleaned and preprocessed the data to handle missing values and ensure consistency.
 
 ### Exploratory Data Analysis (EDA)
@@ -36,21 +35,21 @@ This project focuses on leveraging data analytics to predict the demand for heal
 - Created new features using ratios and interactions to enhance model performance.
 
 ### Predictive Modeling
-- Selected models: linear regression, decision trees, etc.
-- Trained and validated models using metrics like RMSE and R-squared.
+- Selected models: linear regression, elastic net, and boosting.
+- Trained and validated models using metrics like RMSE, MAE, MAPE, and R-squared.
 - Predicted demand for healthcare claims.
 
 ### Provider Segmentation
-- Applied clustering techniques (e.g., K-means) to segment healthcare providers.
+- Applied clustering techniques (K-means, GMM, Birch, among others) to segment healthcare providers.
 - Analyzed segments to link characteristics to the number of claims.
 
 ## Results
-- **Predictive Modeling:** Key findings and model performance metrics.
-- **Segmentation Analysis:** Characteristics of identified segments and their relation to claim numbers.
+- **Predictive Modeling:** The final predictions are done using a weighted average of the predictions of the 2 approaches utilized during the development of models.
+- **Segmentation Analysis:** Three clusters were detected. Each of them had their own important characteristics related to the composition of claims and geographic information.
 
 ## Usage
 ### Prerequisites
-- Python 3.x
+- Python 3.9
 - Required libraries: pandas, numpy, scikit-learn, matplotlib, seaborn
 
 ### Installation
@@ -58,30 +57,9 @@ This project focuses on leveraging data analytics to predict the demand for heal
     ```bash
     git clone https://github.com/AxelResnik/CAPSTONE.git
     ```
-2. Install required packages:
-    ```bash
-    pip install -r requirements.txt
-    ```
 
 ### Running the Project
-1. Preprocess the data:
-    ```bash
-    python preprocess.py
-    ```
-2. Perform exploratory data analysis:
-    ```bash
-    python eda.py
-    ```
-3. Train predictive models:
-    ```bash
-    python prediction_benchmarks.py
-    python elastic_net.py
-    python booster.py
-    ```
-4. Segment healthcare providers:
-    ```bash
-    python segment_providers.py
-    ```
+1. Examples of how to use the code can be found in the "notebooks" file.
 
 ## Project Structure
 ```
@@ -97,7 +75,7 @@ CAPSTONE/
 ├── scripts/
 │   ├── preprocess.py
 ├── README.md
-├── requirements.txt
+├── .gitignore
 ```
 
 ## Contributors
