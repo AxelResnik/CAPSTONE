@@ -6,6 +6,7 @@ This project focuses on leveraging data analytics to predict the demand for heal
 ## Objectives
 1. Predict the demand of claims for each healthcare provider.
 2. Segment health providers and link underlying characteristics to the number of claims.
+3. Use the segments and predict the claim for each one.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -16,7 +17,6 @@ This project focuses on leveraging data analytics to predict the demand for heal
 - [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Contributors](#contributors)
-- [License](#license)
 
 ## Dataset
 - **Source:** CAPTONE project for ie Business school in collaboration with Accenture.
