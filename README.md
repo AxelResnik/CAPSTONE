@@ -85,19 +85,17 @@ This project focuses on leveraging data analytics to predict the demand for heal
 
 ## Project Structure
 ```
-healthcare-claims-prediction/
-├── data/
-│   ├── raw/
-│   ├── processed/
+CAPSTONE/
 ├── notebooks/
-├── src/
+│   ├── EDA_notebook/
+│   ├── clustering_notebook/
+│   ├── prediction_notebook/
+├── models/
 │   ├── preprocess.py
 │   ├── eda.py
 │   ├── train_model.py
-│   ├── segment_providers.py
-├── results/
-│   ├── figures/
-│   ├── tables/
+├── scripts/
+│   ├── preprocess.py
 ├── README.md
 ├── requirements.txt
 ```
