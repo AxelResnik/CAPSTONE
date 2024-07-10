@@ -73,7 +73,7 @@ CAPSTONE/
 │   ├── eda.py
 │   ├── train_model.py
 ├── scripts/
-│   ├── preprocess.py
+│   ├── prediction_preprocess.py
 ├── README.md
 ├── .gitignore
 ```
