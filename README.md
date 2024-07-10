@@ -74,6 +74,7 @@ CAPSTONE/
 │   ├── train_model.py
 ├── scripts/
 │   ├── prediction_preprocess.py
+│   ├── clustering_process.py
 ├── README.md
 ├── .gitignore
 ```
